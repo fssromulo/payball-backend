@@ -10,5 +10,4 @@ const port = process.env.PORT || 3001;
 app.use('/', require('./routes'));
 app.listen(port);
 
-
 // http://localhost:3001/player
