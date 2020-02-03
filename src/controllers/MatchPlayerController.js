@@ -84,10 +84,7 @@ const MatchPlayerController = {
 	async removeDefault(id_match, arrPlayers) {
 		await MatchPlayer.destroy({
 			where: {
-				id_match: id_match,
-				id_player: {
-					[Op.in]: arrPlayers
-				}
+				id_match
 			}
 		});
 	}
