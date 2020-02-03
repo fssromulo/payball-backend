@@ -1,10 +1,31 @@
 const Player = require('./../models/PlayerModel');
 
+const PositionModel = require('./../models/PositionModel');
+
 const PlayerController = {
    async getPlayers(req, res) {
       try {
 
-         const playerList = await Player.findAll();
+         const playerList = await Player.findAll({
+            attributes: [
+               'id',
+               'name',
+               'skills',
+               'id_position'
+
+            ],
+            hierarchy: true,
+            include: [
+               {
+                  model: PositionModel,
+                  // as: 'positions', // Alias MySQL p/ tabela
+                  required: true,
+                  attributes: {
+                     exclude: ['id']
+                  },
+               },
+            ]
+         });
          return res.json(playerList);
 
       } catch (error) {
@@ -55,7 +76,7 @@ const PlayerController = {
             name,
             skills,
             id_position
-         },{
+         }, {
             where: {
                id: id_player
             }

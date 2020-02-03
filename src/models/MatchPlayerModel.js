@@ -1,5 +1,8 @@
 const Sequelize = require('sequelize');
 const objConnection = require('../database/database-connection');
+const PlayerModel = require('./PlayerModel');
+const MatchModel = require('./MatchModel');
+const PositionModel = require('./PositionModel');
 
 const MatchPlayerModel = objConnection.define('matchs_players', {
    id:{
@@ -22,5 +25,29 @@ const MatchPlayerModel = objConnection.define('matchs_players', {
    }
 
 });
+
+MatchPlayerModel.belongsTo(
+   PlayerModel,
+   {
+      foreignKey: 'id_player',
+      targetKey: 'id'
+   }
+);
+
+MatchPlayerModel.belongsTo(
+   MatchModel,
+   {
+      foreignKey: 'id_match',
+      targetKey: 'id'
+   }
+);
+
+// PlayerModel.belongsTo(
+//    PositionModel,
+//    {
+//       foreignKey: 'id_position',
+//       targetKey: 'id'
+//    }
+// );
 
 module.exports = MatchPlayerModel;

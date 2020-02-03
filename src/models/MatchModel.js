@@ -10,6 +10,7 @@ const MatchModel = objConnection.define('matchs', {
    },
    place: Sequelize.STRING,
 	dt_match: Sequelize.DATE,
+	qtd_players: Sequelize.INTEGER,
 
    createdAt: {
       type: Sequelize.DATE,

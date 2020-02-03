@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
 const objConnection = require('./../database/database-connection');
+const PositionModel = require('./PositionModel');
 
 const PlayerModel = objConnection.define('players', {
-   id:{
+   id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
       allowNull: false,
@@ -20,5 +21,13 @@ const PlayerModel = objConnection.define('players', {
       allowNull: false
    }
 });
+
+PlayerModel.belongsTo(
+   PositionModel,
+   {
+      foreignKey: 'id_position',
+      targetKey: 'id'
+   }
+);
 
 module.exports = PlayerModel;

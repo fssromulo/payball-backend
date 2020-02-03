@@ -1,11 +1,20 @@
 const Match = require('./../models/MatchModel');
+const sequelize = require('sequelize');
 
 
 const MatchController = {
 	async getMatchs(req, res) {
 		try {
 
-			const matchList = await Match.findAll();
+			const matchList = await Match.findAll({
+				attributes: [
+					'id',
+					'place',
+					'qtd_players',
+					[sequelize.fn('date_format', sequelize.col('dt_match'), '%d/%m/%Y'), 'dt_match_br'],
+					[sequelize.fn('date_format', sequelize.col('dt_match'), '%Y-%m-%d'), 'dt_match_us']
+				]
+			});
 
 			return res.json(matchList);
 		} catch (error) {
@@ -17,7 +26,17 @@ const MatchController = {
 
 			const { id_match } = req.params;
 
-			const match = await Match.findByPk(id_match);
+			const match = await Match.findByPk(id_match,
+				{
+					attributes: [
+						'id',
+						'place',
+						'qtd_players',
+						[sequelize.fn('date_format', sequelize.col('dt_match'), '%d/%m/%Y'), 'dt_match_br'],
+						[sequelize.fn('date_format', sequelize.col('dt_match'), '%Y-%m-%d'), 'dt_match_us']
+					]
+				}
+			);
 
 			return res.json(match);
 		} catch (error) {
@@ -27,11 +46,12 @@ const MatchController = {
 	async saveMatch(req, res) {
 		try {
 
-			const { place, dt_match } = req.body;
+			const { place, dt_match, qtd_players } = req.body;
 
 			const matchCreated = await Match.create({
 				place,
-				dt_match
+				dt_match,
+				qtd_players
 			});
 
 			return res.json(matchCreated);
@@ -42,12 +62,13 @@ const MatchController = {
 	async updateMatch(req, res) {
 		try {
 
-			const { place, dt_match } = req.body;
+			const { place, dt_match, qtd_players } = req.body;
 			const { id_match } = req.params;
 
 			const matchUpdated = await Match.update({
 				place,
-				dt_match
+				dt_match,
+				qtd_players
 			}, {
 				where: {
 					id: id_match

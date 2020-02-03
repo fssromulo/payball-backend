@@ -1,14 +1,16 @@
 const MatchPlayer = require('./../models/MatchPlayerModel');
 const { Op } = require('sequelize');
 
+const PlayerModel = require('./../models/PlayerModel');
+const MatchModel = require('./../models/MatchModel');
+const PositionModel = require('./../models/PositionModel');
+
 const MatchPlayerController = {
 	async saveMatchPlayer(req, res) {
 		try {
 			const { id_match, arrPlayers } = req.body;
 
-			console.log('1');
 			await MatchPlayerController.removeDefault(id_match, arrPlayers);
-			console.log('2');
 			let arrInsert = [];
 
 			arrPlayers.forEach((id_player) => {
@@ -42,8 +44,32 @@ const MatchPlayerController = {
 	async getMatchsPlayers(req, res) {
 		try {
 			const { id_match } = req.params;
-			const matchPlayerList = await MatchPlayer.findAll(
-			{
+			const matchPlayerList = await MatchPlayer.findAll({
+				attributes: [
+					"id",
+					'id_match',
+					'id_player',
+
+				],
+            hierarchy: true,
+            include: [
+               {
+                  model: PlayerModel,
+                  // as: 'positions', // Alias MySQL p/ tabela
+                  required: true,
+                  attributes: {
+                     exclude: ['id', 'createdAt', 'updatedAt']
+                  },
+               },
+               {
+                  model: MatchModel,
+                  // as: 'positions', // Alias MySQL p/ tabela
+                  required: true,
+                  attributes: {
+                     exclude: ['id', 'createdAt', 'updatedAt']
+                  },
+               }
+            ],
 				where: {
 					id_match
 				}
@@ -51,7 +77,7 @@ const MatchPlayerController = {
 
 			return res.json(matchPlayerList);
 		} catch (error) {
-			console.log('Erro ao REMOVEER a partida com os jogadores >', error);
+			console.log('Erro ao RETORNAR a partida com os jogadores >', error);
 		}
 	},
 
